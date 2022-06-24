@@ -1,0 +1,11 @@
+# NodeJS ignores:
+node_modules/*
+*.lock
+
+# Godot ignores:
+.import/
+*.import
+*.translation
+export_presets.cfg
+.mono/
+
