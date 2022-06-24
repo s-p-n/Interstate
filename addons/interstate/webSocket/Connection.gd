@@ -129,9 +129,9 @@ func _on_closed(was_clean = false):
 	_end_connection()
 	print("Closed, clean: ", was_clean)
 
-func _on_error(err):
+func _on_error():
 	_end_connection()
-	print("WebSocket->Connection Error: ", err)
+	print("WebSocket->Connection Error")
 
 func _on_established(proto):
 	is_connected = true

@@ -17,8 +17,8 @@ const ticker = new Ticker(10);
 	while(client = new Client(await $.until("connect"), $)) {
 		console.log(`A Client connected`);
 		console.log(client.id);
-		client.subscribe("ticker", ticker);
-		client.subscribe("heartbeat", Heartbeat);
+		client.subscribe(Ticker, ticker);
+		client.subscribe(Heartbeat);
 	}
 	console.log("No longer listening for connections.");
 	process.exit(0);

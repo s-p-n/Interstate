@@ -1,3 +1,47 @@
-[gd_scene format=2]
+[gd_scene load_steps=2 format=2]
 
-[node name="Spatial" type="Spatial"]
+[sub_resource type="CubeMesh" id=1]
+
+[node name="Interstate" type="Spatial"]
+
+[node name="RigidBody" type="RigidBody" parent="."]
+mode = 1
+
+[node name="CSGMesh" type="CSGMesh" parent="RigidBody"]
+invert_faces = true
+mesh = SubResource( 1 )
+
+[node name="RigidBody2" type="RigidBody" parent="."]
+mode = 1
+
+[node name="CSGMesh" type="CSGMesh" parent="RigidBody2"]
+invert_faces = true
+mesh = SubResource( 1 )
+
+[node name="RigidBody3" type="RigidBody" parent="."]
+mode = 1
+
+[node name="CSGMesh" type="CSGMesh" parent="RigidBody3"]
+invert_faces = true
+mesh = SubResource( 1 )
+
+[node name="RigidBody4" type="RigidBody" parent="."]
+mode = 1
+
+[node name="CSGMesh" type="CSGMesh" parent="RigidBody4"]
+invert_faces = true
+mesh = SubResource( 1 )
+
+[node name="RigidBody5" type="RigidBody" parent="."]
+mode = 1
+
+[node name="CSGMesh" type="CSGMesh" parent="RigidBody5"]
+invert_faces = true
+mesh = SubResource( 1 )
+
+[node name="RigidBody6" type="RigidBody" parent="."]
+mode = 1
+
+[node name="CSGMesh" type="CSGMesh" parent="RigidBody6"]
+invert_faces = true
+mesh = SubResource( 1 )

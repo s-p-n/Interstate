@@ -1,14 +1,16 @@
+const Ticker = require('./Ticker.js')
+
 class Heartbeat {
 	constructor(client) {
 		this.client = client;
-		this.ticker = client?.subscriptions?.get('ticker');
+		this.ticker = client?.subscriptions?.get(Ticker);
 		this.heartbeatTime = 1000;
 		this.isAlive = false;
 		this.stopNextTick = false;
 		this.isRunning = false;
 
 		if (!this.ticker) {
-			throw `Heartbeat requires the client have an instance of Ticker as a subscription named 'ticker'`;
+			throw `Heartbeat requires the client have an instance of Ticker as a subscription.`;
 		}
 	}
 

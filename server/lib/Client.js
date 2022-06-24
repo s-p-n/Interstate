@@ -9,27 +9,27 @@ class Client {
 		this.id = uuidv4();
 	}
 
-	disconnect(connection) {
-		if (connections.has(connection)) {
+	disconnect() {
+		if (connections.has(this.connection)) {
 			console.log("Disconnected client:", this.id);
-			connections.remove(connection);
+			connections.remove(this.connection);
+
 		}
 	}
 
-	subscribe (name, Class) {
-		let object;
-
-		if (Class.start) {
-			object = Class;
-		} else {
+	subscribe (Class, object=null) {
+		if (object === null) {
 			object = new Class(this);
+			
+		} else if(!(object instanceof Class)) {
+			throw new Error("Client Subscription Error: Subscribing to a Class with an object that is not an instance of that class.");
 		}
 
-		if (this.subscriptions.has(name)) {
+		if (this.subscriptions.has(Class)) {
 			return false;
 		}
 
-		this.subscriptions.set(name, Class);
+		this.subscriptions.set(Class, object);
 		object.start();
 		return true;
 	}
