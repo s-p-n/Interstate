@@ -1,33 +1,53 @@
 const uuidv4 = require('uuid').v4;
-const connections = new Map();
+const ListenerArray = require('./ListenerArray.js');
+const Emitter = require('./Emitter.js');
+const Packet = require('./Packet.js');
 
-class Client {
+class Client extends Emitter {
 	constructor (newConnection, server) {
+		super();
+
 		this.connection = newConnection;
 		this.subscriptions = new Map();
+		this.channels = this.eventListeners;
 		this.server = server;
 		this.id = uuidv4();
 	}
 
-	disconnect() {
+	deconstruct() {
+		disconnect();
+		console.log("Client deconstructed.");
+	}
+
+	disconnect () {
+		const connections = this.server.connections;
 		if (connections.has(this.connection)) {
 			console.log("Disconnected client:", this.id);
-			connections.remove(this.connection);
-
+			connections.delete(this.connection);
+			return (async () => {
+				(await this.createEmitter("disconnect"))();
+			})();
 		}
 	}
 
+	emit (channelName, data) {
+		this.connection.send(new Packet(channelName, data));
+	}
+
 	subscribe (Class, object=null) {
+		if (this.subscriptions.has(Class)) {
+			return false;
+		}
+
 		if (object === null) {
 			object = new Class(this);
-			
 		} else if(!(object instanceof Class)) {
 			throw new Error("Client Subscription Error: Subscribing to a Class with an object that is not an instance of that class.");
 		}
 
-		if (this.subscriptions.has(Class)) {
-			return false;
-		}
+		console.log("Subscribing to client:");
+		console.log(Class);
+		console.log(object);
 
 		this.subscriptions.set(Class, object);
 		object.start();
@@ -37,6 +57,7 @@ class Client {
 
 module.exports = function findOrCreateClient(newConnection, server) {
 	// If connection already saved, send it:
+	const connections = server.connections;
 	console.log("Signal to create client");
 	console.log("Total connections before new client: ", connections.size);
 	if (connections.has(newConnection)) {

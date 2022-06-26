@@ -87,7 +87,7 @@ func _wait_for_timeout():
 		return
 	else:
 		print("I've been waiting all my life for this, good-bye, connection attempt!!\nMuahahahahaha")
-		_end_connection()
+		_end_connection(false)
 func send(data:String):
 	if is_connected:
 		client.get_peer(1).put_packet(data.to_utf8())
@@ -112,7 +112,7 @@ func _setup():
 			#return self.queue_free()
 			
 		client = WebSocket.client
-		_end_connection()
+		_end_connection(true)
 		if len(client.get_signal_connection_list("connection_closed")) > 0:
 			client.disconnect("connection_closed", self, "_on_closed")
 			client.disconnect("connection_error", self, "_on_error")
@@ -126,11 +126,11 @@ func _setup():
 		
 
 func _on_closed(was_clean = false):
-	_end_connection()
+	_end_connection(was_clean)
 	print("Closed, clean: ", was_clean)
 
 func _on_error():
-	_end_connection()
+	_end_connection(false)
 	print("WebSocket->Connection Error")
 
 func _on_established(proto):
@@ -142,10 +142,14 @@ func _on_data(data):
 	print("Got data: ", data)
 	WebSocket.Distributor.handle_data(data)
 
-func _end_connection():
+func _end_connection(was_clean):
 	is_connected = false
 	should_loop = false
 	var cur_status = client.get_connection_status()
 	if cur_status == client.CONNECTION_CONNECTING or cur_status == client.CONNECTION_CONNECTED:
 		client.disconnect_from_host()
-	emit_signal("fail")
+		
+		if was_clean:
+			emit_signal("disconnect")
+		else:
+			emit_signal("fail")

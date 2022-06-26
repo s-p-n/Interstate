@@ -1,6 +1,6 @@
 const WS = require('ws');
 const ListenerArray = require('./ListenerArray.js');
-
+const Emitter = require('./Emitter.js');
 const eventNames = [
 	"ready",
 	"error",
@@ -10,12 +10,13 @@ const eventNames = [
 	"pong"
 ];
 
-class WebSocket {
+class WebSocket extends Emitter {
 	constructor(properties) {
+		super();
 		this.port = properties.port || 8496;
 		this.isReady = false;
 		this.ws = new WS.Server({ port: 4200 });
-		this.clients = [];
+		this.connections = new Map();
 
 		this.eventListeners = eventNames.reduce((obj, name) => {
 			obj[name] = new ListenerArray(this);
@@ -61,7 +62,7 @@ class WebSocket {
 				return resolve();
 			}
 
-			this.on(eventName, resolve);
+			this.once(eventName, resolve);
 		});
 	}
 
@@ -73,8 +74,7 @@ class WebSocket {
 			return null;
 		}
 
-
-		console.log("Emitting connection event!");
+		console.log("Emitting event:", eventName);
 
 		return ((...args) => 
 			this.eventListeners[eventName].applyAll(args));

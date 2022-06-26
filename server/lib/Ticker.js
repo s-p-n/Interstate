@@ -34,8 +34,12 @@ class Ticker {
 	}
 
 	async untilTick() {
+		const self = this;
 		return await new Promise(accept => {
-			this.onTick(accept);
+			self.onTick(function oneTime(...args) {
+				self.tickListeners.detatch(oneTime);
+				accept(...args);
+			});
 		});
 	}
 

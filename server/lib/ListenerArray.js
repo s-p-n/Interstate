@@ -28,20 +28,34 @@ class ListenerArray {
 		return result;
 	}
 
-	async push (callback) {
-		this.listeners.push(callback);
+	push (callback) {
+		return this.listeners.push(callback);
 	}
 
 	detatch (callback) {
 		const i = this.listeners.indexOf(callback);
 		
 		if (i === -1) {
+			console.log(this.listeners);
+			console.log(callback);
+			throw new Error("ListenerArray: Trying to detatch listener that doesn't exist");
 			return false;
 		}
 
+		//console.log("Detatching listener", this.listeners.length);
 		this.listeners.splice(i, 1);
+		//console.log("Detatched listener", this.listeners.length);
 		return true;
 	}
+
+	/* Unsafe, because indexes change
+	detatchIndex(index) {
+		console.log("Detatching listener (length)", this.listeners.length);
+		this.listeners.splice(index, 1);
+		console.log("Detatched a listener (new length)", this.listeners.length);
+		return true;
+	}
+	*/
 
 	[Symbol.asyncIterator] () {
 		const self = this;
